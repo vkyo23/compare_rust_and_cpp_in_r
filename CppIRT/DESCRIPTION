@@ -1,11 +1,9 @@
 Package: CppIRT
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
-Version: 1.0
+Title: Fast IRT estimation with Cpp
+Version: 0.0.0.9
 Date: 2024-08-31
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as one or more full sentences.
-License: GPL (>= 2)
+Author: Ukyo Kanetaka
+License: GPL (>= 3)
 Imports: Rcpp (>= 1.0.13)
 LinkingTo: Rcpp
