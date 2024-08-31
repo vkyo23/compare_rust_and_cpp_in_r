@@ -18,9 +18,9 @@ CppIRTModel::CppIRTModel(const arma::mat &Y, arma::vec alpha, arma::vec beta,
       b0(b0),
       B0(B0),
       theta_constraint(theta_constraint),
-      theta_strict_identification(theta_strict_identification),
       maxit(maxit),
       verbose(verbose),
+      theta_strict_identification(theta_strict_identification),
       tol(tol) {
   S = Y - 0.5;
   Omega = arma::mat(I, J);
