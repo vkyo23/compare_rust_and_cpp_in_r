@@ -5,6 +5,8 @@ on:
     branches:
       - '**'
     types: [synchronize, opened]
+    paths: 
+      - 'CppIRT/**'
 
 name: R-CMD-check
 
