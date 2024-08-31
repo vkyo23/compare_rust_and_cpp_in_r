@@ -10,3 +10,4 @@ src/*.dll
 
 # vscode
 .vscode/
+.clang-format
