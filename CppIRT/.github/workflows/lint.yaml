@@ -6,9 +6,9 @@ on:
       - main
   pull_request:
     branches:
-      - **
+      - "**"
 
-name: lint.yaml
+name: R-lint
 
 permissions: read-all
 

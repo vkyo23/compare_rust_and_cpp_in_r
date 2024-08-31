@@ -6,9 +6,9 @@ on:
       - main
   pull_request:
     branches:
-      - **
+      - "**"
 
-name: R-CMD-check.yaml
+name: R-CMD-check
 
 permissions: read-all
 
