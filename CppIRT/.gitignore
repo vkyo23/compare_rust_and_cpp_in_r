@@ -1,0 +1,13 @@
+# rcpp project
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.html
+src/*.o
+src/*.so
+src/*.dll
+
+# vscode
+.vscode/
+.clang-format
