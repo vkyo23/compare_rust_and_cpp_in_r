@@ -9,3 +9,4 @@ name = 'RustIRT'
 
 [dependencies]
 extendr-api = '*'
+ndarray = '0.15'
