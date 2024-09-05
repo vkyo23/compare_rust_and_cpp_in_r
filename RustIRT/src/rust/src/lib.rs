@@ -146,7 +146,7 @@ impl RustIRTModel {
             let mut mu_part: f64 = self.b0 / self.B0;
             let mut sig_part: f64 = 1.0 / self.B0;
             for i in 0..self.I {
-                mu_part += self.theta[i] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
+                mu_part += self.theta[i] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha_new[j]);
                 sig_part += self.Omega[(i, j)] * self.theta[i].powf(2.0);
             }
             self.beta_new[j] = mu_part / sig_part;
@@ -158,8 +158,8 @@ impl RustIRTModel {
             let mut mu_part: f64 = 0.0;
             let mut sig_part: f64 = 1.0;
             for j in 0..self.J {
-                mu_part += self.beta[j] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
-                sig_part += self.Omega[(i, j)] * self.beta[j].powf(2.0);
+                mu_part += self.beta_new[j] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha_new[j]);
+                sig_part += self.Omega[(i, j)] * self.beta_new[j].powf(2.0);
             }
             self.theta_new[i] = mu_part / sig_part;
         }
