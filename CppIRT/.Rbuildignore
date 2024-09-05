@@ -2,5 +2,5 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^\.github$
-.vscode/
-.clang-format
+\.vscode/
+\.clang-format
