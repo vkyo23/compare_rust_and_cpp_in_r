@@ -1,5 +1,5 @@
 use extendr_api::prelude::*;
-use ndarray::{s, Array1, Array2};
+use ndarray::{s, Array1, Array2, ShapeBuilder};
 
 struct RustIRTModel {
     I: usize,
@@ -90,7 +90,7 @@ impl RustIRTModel {
                 rprintln!(
                     "  - Iteration {}: eval = {}",
                     self.iter + 1,
-                    self.convergence_metric
+                    format!("{:.5e}", self.convergence_metric)
                 );
             }
             self.iter += 1;
@@ -147,7 +147,7 @@ impl RustIRTModel {
             let mut sig_part: f64 = 1.0 / self.B0;
             for i in 0..self.I {
                 mu_part += self.theta[i] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
-                sig_part += self.Omega[(i, j)] * self.theta[i].powi(2);
+                sig_part += self.Omega[(i, j)] * self.theta[i].powf(2.0);
             }
             self.beta_new[j] = mu_part / sig_part;
         }
@@ -159,7 +159,7 @@ impl RustIRTModel {
             let mut sig_part: f64 = 1.0;
             for j in 0..self.J {
                 mu_part += self.beta[j] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
-                sig_part += self.Omega[(i, j)] * self.beta[j].powi(2);
+                sig_part += self.Omega[(i, j)] * self.beta[j].powf(2.0);
             }
             self.theta_new[i] = mu_part / sig_part;
         }
@@ -177,7 +177,7 @@ impl RustIRTModel {
     fn save_update_history(&mut self) {
         self.update_histories[(self.iter, 0)] = 1.0 - calc_corcoeff(&self.alpha_new, &self.alpha);
         self.update_histories[(self.iter, 1)] = 1.0 - calc_corcoeff(&self.beta_new, &self.beta);
-        self.update_histories[(self.iter, 2)] = 1.0 - 1.0 - calc_corcoeff(&self.theta_new, &self.theta);
+        self.update_histories[(self.iter, 2)] = 1.0 - calc_corcoeff(&self.theta_new, &self.theta);
 
         self.alpha = self.alpha_new.clone();
         self.beta = self.beta_new.clone();
@@ -257,9 +257,8 @@ fn calc_corcoeff(x: &Array1<f64>, y: &Array1<f64>) -> f64 {
 
 fn rmatrix_i32_to_array2_f64(mat: RMatrix<i32>) -> Array2<f64> {
     let dim: &[usize; 2] = mat.dim();
-    let shape: (usize, usize) = (dim[0], dim[1]);
     let data: Vec<f64> = mat.data().iter().map(|&x| x as f64).collect();
-    return Array2::from_shape_vec(shape, data).expect("failed to convert RMatrix to Array2");
+    return Array2::from_shape_vec((dim[0], dim[1]).f(), data).expect("failed to convert RMatrix to Array2");
 }
 
 fn array2_to_rmatrix(arr: Array2<f64>) -> RMatrix<f64> {
