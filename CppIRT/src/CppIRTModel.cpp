@@ -1,13 +1,21 @@
 //[[Rcpp::depends(RcppArmadillo)]]
 #include "CppIRTModel.h"
 
-CppIRTModel::CppIRTModel(const arma::mat &Y, arma::vec alpha, arma::vec beta,
-                         arma::vec theta, const double &a0, const double &A0,
-                         const double &b0, const double &B0,
-                         const int &theta_constraint,
-                         const bool &theta_strict_identification,
-                         const int &maxit, const int &verbose,
-                         const double &tol)
+CppIRTModel::CppIRTModel(
+    const arma::mat &Y,
+    arma::vec alpha,
+    arma::vec beta,
+    arma::vec theta,
+    const double &a0,
+    const double &A0,
+    const double &b0,
+    const double &B0,
+    const int &theta_constraint,
+    const bool &theta_strict_identification,
+    const int &maxit,
+    const int &verbose,
+    const double &tol
+)
     : I(Y.n_rows),
       J(Y.n_cols),
       alpha(alpha),
@@ -36,15 +44,25 @@ CppIRTModel::CppIRTModel(const arma::mat &Y, arma::vec alpha, arma::vec beta,
 CppIRTModel::~CppIRTModel() {}
 
 //[[Rcpp::export]]
-Rcpp::List fit_CppIRT(const arma::mat &Y, arma::vec alpha, arma::vec beta,
-                      arma::vec theta, const double &a0, const double &A0,
-                      const double &b0, const double &B0,
-                      const int &theta_constraint,
-                      const bool &theta_strict_identification, const int &maxit,
-                      const int &verbose, const double &tol) {
-  CppIRTModel model =
-      CppIRTModel(Y, alpha, beta, theta, a0, A0, b0, B0, theta_constraint,
-                  theta_strict_identification, maxit, verbose, tol);
+Rcpp::List fit_CppIRT(
+    const arma::mat &Y,
+    arma::vec alpha,
+    arma::vec beta,
+    arma::vec theta,
+    const double &a0,
+    const double &A0,
+    const double &b0,
+    const double &B0,
+    const int &theta_constraint,
+    const bool &theta_strict_identification,
+    const int &maxit,
+    const int &verbose,
+    const double &tol
+) {
+  CppIRTModel model = CppIRTModel(
+      Y, alpha, beta, theta, a0, A0, b0, B0, theta_constraint,
+      theta_strict_identification, maxit, verbose, tol
+  );
 
   model.fit();
   Rcpp::List output = model.output();
@@ -57,7 +75,8 @@ Rcpp::List CppIRTModel::output() {
       Rcpp::Named("alpha") = alpha, Rcpp::Named("beta") = beta,
       Rcpp::Named("theta") = theta, Rcpp::Named("converged") = converged,
       Rcpp::Named("iteration") = iter,
-      Rcpp::Named("update_histories") = update_histories.rows(0, iter));
+      Rcpp::Named("update_histories") = update_histories.rows(0, iter)
+  );
 
   return modeloutput;
 }

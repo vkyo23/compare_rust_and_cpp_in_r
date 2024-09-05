@@ -5,11 +5,21 @@
 
 class CppIRTModel {
  public:
-  CppIRTModel(const arma::mat &Y, arma::vec alpha, arma::vec beta,
-              arma::vec theta, const double &a0, const double &A0,
-              const double &b0, const double &B0, const int &theta_constraint,
-              const bool &theta_strict_identification, const int &maxit,
-              const int &verbose, const double &tol);
+  CppIRTModel(
+      const arma::mat &Y,
+      arma::vec alpha,
+      arma::vec beta,
+      arma::vec theta,
+      const double &a0,
+      const double &A0,
+      const double &b0,
+      const double &B0,
+      const int &theta_constraint,
+      const bool &theta_strict_identification,
+      const int &maxit,
+      const int &verbose,
+      const double &tol
+  );
   ~CppIRTModel();
 
   void fit();
