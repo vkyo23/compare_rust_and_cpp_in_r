@@ -1,6 +1,6 @@
 #' @title Fitting the two parameter logistic IRT model
 #' @description \code{\link{rustirt_model}} is an instance to estimate IRT. For the methods, see \code{\link{RustIRTModel}}.
-#' 
+#'
 #' @param data an I (individual) x J (item) matrix. This should contain 0 or 1.
 #' @param priors a list containing priors:
 #' \itemize{
@@ -17,14 +17,14 @@
 #'   \item \code{verbose}: a positive integer. Print the status every \code{verbose} iteration. If this is not specified, any iteration status is not be printed.
 #'   \item \code{tol}: a float (0.0 < tol < 1.0). Convergence threshold. Default is 1e-6.
 #' }
-#' 
+#'
 #' @return A \code{\link{RustIRTModel}} object.
 #' @export
-#' 
+#'
 #' @examples
 #' \dontrun{
 #'  library(RustIRT)
-#'   
+#'
 #'  # data generating process
 #'  I <- 1000
 #'  J <- 100
@@ -36,7 +36,7 @@
 #'  )
 #'  Y <- rbinom(I * J, 1, p) |>
 #'         matrix(I, J)
-#'   
+#'
 #'  # create an instance
 #'  model <- rustirt_model(
 #'    data = Y,
@@ -45,10 +45,10 @@
 #'      theta_strict_identification = TRUE
 #'    )
 #'  )
-#'   
+#'
 #'  # fit the model
 #'  model$fit()
-#'   
+#'
 #'  # get the result
 #'  out <- model$output()
 #' }
@@ -61,21 +61,21 @@ rustirt_model <- function(data, priors = list(), control = list()) {
 #'
 #' @name RustIRTModel
 #' @description A \code{\link{RustIRTModel}} object is an \code{\link[R6]{R6Class}} object created
-#'   by the \code{\link{rustirt_model}} function. 
+#'   by the \code{\link{rustirt_model}} function.
 #'
 #' @importFrom R6 R6Class
 #' @importFrom stats coef glm
-#' 
+#'
 #' @useDynLib RustIRT, .registration = TRUE
-#' 
+#'
 
 RustIRTModel <- R6::R6Class(
   classname = "RustIRTModel",
   lock_objects = FALSE,
   public = list(
-    
+
     #' @description Initialize the new instance of \code{\link{RustIRTModel}}.
-    #' 
+    #'
     #' @param data an I (individual) x J (item) matrix. This should contain 0 or 1.
     #' @param priors a list containing priors:
     #' \itemize{
@@ -119,7 +119,7 @@ RustIRTModel <- R6::R6Class(
       cat("* initialized the model...")
       private$initialize_parameters()
       cat("DONE\n")
-      
+
       cat("* fitting the model:\n")
       private$modelfit <- fit_RustIRT(
         Y = self$Y,
@@ -132,11 +132,11 @@ RustIRTModel <- R6::R6Class(
         B0 = self$B0,
         theta_constraint = self$theta_constraint - 1,
         theta_strict_identification = self$theta_strict_identification,
-        maxit = self$maxit, 
-        verbose = self$verbose, 
+        maxit = self$maxit,
+        verbose = self$verbose,
         tol = self$tol
       )
-      
+
       if (private$modelfit$converged) {
         cat("* model converged at iteration", private$modelfit$iteration, "\n")
       } else {
@@ -157,8 +157,8 @@ RustIRTModel <- R6::R6Class(
         control = list(
           theta_constraint = self$theta_constraint,
           theta_strict_identification = self$theta_strict_identification,
-          maxit = self$maxit, 
-          verbose = self$verbose, 
+          maxit = self$maxit,
+          verbose = self$verbose,
           tol = self$tol
         )
       )
@@ -173,9 +173,9 @@ RustIRTModel <- R6::R6Class(
       if (self$theta_constraint == -1) self$theta_constraint <- which.max(self$theta)
       if (self$theta[self$theta_constraint] < 0) self$theta <- -self$theta
       self$theta <- scale(self$theta)[, 1]
-      
+
       for (j in 1:ncol(self$Y)) {
-        coefs <- stats::glm(self$Y[, j] ~ self$theta, family = "binomial") |> 
+        coefs <- stats::glm(self$Y[, j] ~ self$theta, family = "binomial") |>
           stats::coef()
         coefs <- ifelse(abs(coefs) >= 10, 0.1, coefs)
         self$alpha[j] <- coefs[1]
