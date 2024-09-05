@@ -1,6 +1,48 @@
 use extendr_api::prelude::*;
 use ndarray::{s, Array1, Array2, ShapeBuilder};
 
+// Exported function to R
+#[extendr]
+fn fit_RustIRT(
+    Y: RMatrix<i32>,
+    alpha: Vec<f64>,
+    beta: Vec<f64>,
+    theta: Vec<f64>,
+    a0: f64,
+    A0: f64,
+    b0: f64,
+    B0: f64,
+    theta_constraint: usize,
+    theta_strict_identification: bool,
+    maxit: usize,
+    verbose: usize,
+    tol: f64,
+) -> List {
+    let alpha: Array1<f64> = Array1::from_vec(alpha);
+    let beta: Array1<f64> = Array1::from_vec(beta);
+    let theta: Array1<f64> = Array1::from_vec(theta);
+    let Y: Array2<f64> = rmatrix_i32_to_array2_f64(Y);
+
+
+    let mut model: RustIRTModel = RustIRTModel::new(
+        Y,
+        alpha,
+        beta,
+        theta,
+        a0,
+        A0,
+        b0,
+        B0,
+        theta_constraint,
+        theta_strict_identification,
+        maxit,
+        verbose,
+        tol,
+    );
+    model.fit();
+    model.output()
+}
+
 struct RustIRTModel {
     I: usize,
     J: usize,
@@ -146,7 +188,7 @@ impl RustIRTModel {
             let mut mu_part: f64 = self.b0 / self.B0;
             let mut sig_part: f64 = 1.0 / self.B0;
             for i in 0..self.I {
-                mu_part += self.theta[i] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
+                mu_part += self.theta[i] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha_new[j]);
                 sig_part += self.Omega[(i, j)] * self.theta[i].powf(2.0);
             }
             self.beta_new[j] = mu_part / sig_part;
@@ -158,8 +200,8 @@ impl RustIRTModel {
             let mut mu_part: f64 = 0.0;
             let mut sig_part: f64 = 1.0;
             for j in 0..self.J {
-                mu_part += self.beta[j] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha[j]);
-                sig_part += self.Omega[(i, j)] * self.beta[j].powf(2.0);
+                mu_part += self.beta_new[j] * (self.S[(i, j)] - self.Omega[(i, j)] * self.alpha_new[j]);
+                sig_part += self.Omega[(i, j)] * self.beta_new[j].powf(2.0);
             }
             self.theta_new[i] = mu_part / sig_part;
         }
@@ -196,48 +238,7 @@ impl RustIRTModel {
     }
 }
 
-// Exported function to R
-#[extendr]
-fn fit_RustIRT(
-    Y: RMatrix<i32>,
-    alpha: Vec<f64>,
-    beta: Vec<f64>,
-    theta: Vec<f64>,
-    a0: f64,
-    A0: f64,
-    b0: f64,
-    B0: f64,
-    theta_constraint: usize,
-    theta_strict_identification: bool,
-    maxit: usize,
-    verbose: usize,
-    tol: f64,
-) -> List {
-    let alpha: Array1<f64> = Array1::from_vec(alpha);
-    let beta: Array1<f64> = Array1::from_vec(beta);
-    let theta: Array1<f64> = Array1::from_vec(theta);
-    let Y: Array2<f64> = rmatrix_i32_to_array2_f64(Y);
-
-
-    let mut model: RustIRTModel = RustIRTModel::new(
-        Y,
-        alpha,
-        beta,
-        theta,
-        a0,
-        A0,
-        b0,
-        B0,
-        theta_constraint,
-        theta_strict_identification,
-        maxit,
-        verbose,
-        tol,
-    );
-    model.fit();
-    model.output()
-}
-
+// auxiliary functions
 fn calc_corcoeff(x: &Array1<f64>, y: &Array1<f64>) -> f64 {
     let n: f64 = x.len() as f64;
 
@@ -265,6 +266,7 @@ fn array2_to_rmatrix(arr: Array2<f64>) -> RMatrix<f64> {
     let dim: (usize, usize) = arr.dim();
     return RMatrix::new_matrix(dim.0, dim.1, |i, j| arr[(i, j)])
 }
+
 extendr_module! {
     mod RustIRT;
     fn fit_RustIRT;

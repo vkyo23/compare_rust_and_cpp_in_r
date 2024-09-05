@@ -35,7 +35,7 @@ A \code{\link{RustIRTModel}} object.
 \examples{
 \dontrun{
  library(RustIRT)
-  
+
  # data generating process
  I <- 1000
  J <- 100
@@ -47,7 +47,7 @@ A \code{\link{RustIRTModel}} object.
  )
  Y <- rbinom(I * J, 1, p) |>
         matrix(I, J)
-  
+
  # create an instance
  model <- rustirt_model(
    data = Y,
@@ -56,10 +56,10 @@ A \code{\link{RustIRTModel}} object.
      theta_strict_identification = TRUE
    )
  )
-  
+
  # fit the model
  model$fit()
-  
+
  # get the result
  out <- model$output()
 }

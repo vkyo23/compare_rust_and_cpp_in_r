@@ -1,13 +1,16 @@
 Package: RustIRT
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Fitting the two parameter logistic IRT model using Rust
+Description: An R package that implements fast IRT model with Polya-Gamma data augmentation and EM Algorithm. 
+Version: 0.0.0.9
+Date: 2024-08-31
+Author: Ukyo Kanetaka
+Maintainer: Ukyo Kanetaka <u.kanetaka@gmail.com>
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    R6,
+    stats
 Config/rextendr/version: 0.3.1
 RoxygenNote: 7.3.2
+License: GPL (>= 3)
