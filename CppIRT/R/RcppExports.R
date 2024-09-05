@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 fit_CppIRT <- function(Y, alpha, beta, theta, a0, A0, b0, B0, theta_constraint, theta_strict_identification, maxit, verbose, tol) {
-    .Call('_CppIRT_fit_CppIRT', PACKAGE = 'CppIRT', Y, alpha, beta, theta, a0, A0, b0, B0, theta_constraint, theta_strict_identification, maxit, verbose, tol)
+    .Call(`_CppIRT_fit_CppIRT`, Y, alpha, beta, theta, a0, A0, b0, B0, theta_constraint, theta_strict_identification, maxit, verbose, tol)
 }
 
