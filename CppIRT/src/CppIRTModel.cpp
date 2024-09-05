@@ -131,7 +131,7 @@ void CppIRTModel::update_beta() {
     double mu_part = b0 / B0;
     double sig_part = 1.0 / B0;
     for (int i = 0; i < I; i++) {
-      mu_part += theta[i] * (S(i, j) - Omega(i, j) * alpha[j]);
+      mu_part += theta[i] * (S(i, j) - Omega(i, j) * alpha_new[j]);
       sig_part += Omega(i, j) * std::pow(theta[i], 2.0);
     }
     beta_new[j] = mu_part / sig_part;
@@ -143,8 +143,8 @@ void CppIRTModel::update_theta() {
     double mu_part = 0.0;
     double sig_part = 1.0;
     for (int j = 0; j < J; j++) {
-      mu_part += beta[j] * (S(i, j) - Omega(i, j) * alpha[j]);
-      sig_part += Omega(i, j) * std::pow(beta[j], 2.0);
+      mu_part += beta_new[j] * (S(i, j) - Omega(i, j) * alpha_new[j]);
+      sig_part += Omega(i, j) * std::pow(beta_new[j], 2.0);
     }
     theta_new[i] = mu_part / sig_part;
   }
